@@ -57,8 +57,10 @@ export const generateCriteriaResolvers = ({
       ).get(item)
 
       if (!inputCriteria) {
+        const criteriaSide = side === Side.OFFER ? "offer" : "consideration"
+
         throw new Error(
-          "You must supply the appropriate criterias for criteria based items",
+          `Missing criteria for order ${orderIndex}, ${criteriaSide} item ${index}. You must supply the appropriate criterias for criteria based items`,
         )
       }
 
