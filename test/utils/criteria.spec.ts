@@ -155,19 +155,38 @@ describe("generateCriteriaResolvers", () => {
     ])
   })
 
-  it("throws a clear error when criteria are missing for a criteria item", () => {
-    // Previously this threw "Cannot read properties of undefined" from the
-    // criterias[orderIndex] lookup rather than a meaningful message.
+  it("includes order, side, and item index when offer criteria are missing", () => {
     expect(() =>
       generateCriteriaResolvers({
         orders: [
           order([offerItem(ItemType.ERC721_WITH_CRITERIA)]),
-          order([offerItem(ItemType.ERC721_WITH_CRITERIA)]),
+          order([
+            offerItem(ItemType.ERC20),
+            offerItem(ItemType.ERC721_WITH_CRITERIA),
+          ]),
         ],
         offerCriterias: [[{ identifier: "1", proof: [] }]],
       }),
     ).to.throw(
-      "You must supply the appropriate criterias for criteria based items",
+      "Missing criteria for order 1, offer item 1. You must supply the appropriate criterias for criteria based items",
+    )
+  })
+
+  it("includes consideration context when consideration criteria are missing", () => {
+    expect(() =>
+      generateCriteriaResolvers({
+        orders: [
+          order(
+            [offerItem(ItemType.ERC20)],
+            [
+              considerationItem(ItemType.NATIVE),
+              considerationItem(ItemType.ERC1155_WITH_CRITERIA),
+            ],
+          ),
+        ],
+      }),
+    ).to.throw(
+      "Missing criteria for order 0, consideration item 1. You must supply the appropriate criterias for criteria based items",
     )
   })
 
